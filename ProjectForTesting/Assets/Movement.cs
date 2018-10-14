@@ -35,4 +35,11 @@ public class Movement : MonoBehaviour
     {
         speedMultiplier = 1.0f;
     }
+    public void ChangeSpeed(float multiplier)
+    {
+        if (multiplier == speedMultiplier)
+            speedMultiplier = 1.0f;
+        else
+            speedMultiplier = multiplier;
+    }
 }
