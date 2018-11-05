@@ -11,17 +11,46 @@ public class Movement : MonoBehaviour
     private float speedMultiplier = 1.0f;
     private bool IsSpeedIncreasing = false;
 
+    private Path path;
+    private int nodeId = 0;
+    private Vector3 destination;
+
+    private Vector3 startPosition;
+    private float timer = 0;
     
 	void Start ()
     {
-        
-	}
+        path = FindObjectOfType<Path>();
+        //startPosition = transform.position;
+        SetNextDestination();
+
+    }
 	
 	void Update ()
     {
-        transform.Translate(movementSpeed * speedMultiplier, 0, 0);
-        Debug.Log(movementSpeed * speedMultiplier);
-	}
+        MovementAlongPath();
+        //transform.Translate(movementSpeed * speedMultiplier, 0, 0);
+        //Debug.Log(movementSpeed * speedMultiplier);
+    }
+
+    void MovementAlongPath()
+    {
+        timer += Time.deltaTime * (movementSpeed * speedMultiplier);
+        if (transform.position != destination)
+            transform.position = Vector3.Lerp(startPosition, destination, timer / (Vector3.Distance(startPosition, destination)));
+        else if (nodeId < path.PathNodes.Count - 1)
+        {
+            nodeId++;
+            SetNextDestination();
+        }
+    }
+
+    void SetNextDestination()
+    {
+        timer = 0;
+        startPosition = transform.position;
+        destination = path.PathNodes[nodeId].transform.position;
+    }
 
     public void IncreaseSpeed()
     {
@@ -34,5 +63,12 @@ public class Movement : MonoBehaviour
     public void StopChangingSpeed()
     {
         speedMultiplier = 1.0f;
+    }
+    public void ChangeSpeed(float multiplier)
+    {
+        if (multiplier == speedMultiplier)
+            speedMultiplier = 1.0f;
+        else
+            speedMultiplier = multiplier;
     }
 }
