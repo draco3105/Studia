@@ -11,18 +11,21 @@ public class Movement : MonoBehaviour
     private float speedMultiplier = 1.0f;
     private bool IsSpeedIncreasing = false;
 
+    [SerializeField]
     private Path path;
     private int nodeId = 0;
     private Vector3 destination;
 
     private Vector3 startPosition;
     private float timer = 0;
+
+    private bool isReady = false;
     
 	void Start ()
     {
-        path = FindObjectOfType<Path>();
+        //path = FindObjectOfType<Path>();
         //startPosition = transform.position;
-        SetNextDestination();
+        //SetNextDestination();
 
     }
 	
@@ -35,14 +38,26 @@ public class Movement : MonoBehaviour
 
     void MovementAlongPath()
     {
-        timer += Time.deltaTime * (movementSpeed * speedMultiplier);
-        if (transform.position != destination)
-            transform.position = Vector3.Lerp(startPosition, destination, timer / (Vector3.Distance(startPosition, destination)));
-        else if (nodeId < path.PathNodes.Count - 1)
+        if (true)
         {
-            nodeId++;
-            SetNextDestination();
+            timer += Time.deltaTime * (movementSpeed * speedMultiplier);
+            if (transform.position != destination)
+                transform.position = Vector3.Lerp(startPosition, destination, timer / (Vector3.Distance(startPosition, destination)));
+            else if (nodeId < path.PathNodes.Count - 1)
+            {
+                nodeId++;
+                SetNextDestination();
+            } 
         }
+    }
+
+    public void SetFirstDestination()
+    {
+        timer = 0;
+        startPosition = transform.position;
+        Debug.Log(path.PathNodes[nodeId]);
+        destination = path.PathNodes[nodeId].transform.position;
+        isReady = true;
     }
 
     void SetNextDestination()
